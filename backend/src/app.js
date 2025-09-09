@@ -25,45 +25,25 @@ const MongoStore = require("connect-mongo");
 
 app.use(cookieParser());
 //Cors is used for cross origin communication between servers 
-// Configure CORS to handle multiple origins
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-    : [];
+// Replace your existing CORS setup with this:
 
-// Add fallback origins if ALLOWED_ORIGINS is not set
-if (allowedOrigins.length === 0) {
-    if (process.env.NODE_ENV === 'production') {
-        allowedOrigins.push(process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app');
-    } else {
-        allowedOrigins.push(process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app');
-    }
+let corsOptions;
+
+if (process.env.NODE_ENV === 'production') {
+    corsOptions = {
+        origin: process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    };
+} else {
+    corsOptions = {
+        origin: process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    };
 }
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc.)
-        if (!origin) return callback(null, true);
-        
-        // Remove trailing slashes for comparison
-        const normalizeOrigin = (url) => url?.replace(/\/$/, '');
-        const normalizedOrigin = normalizeOrigin(origin);
-        
-        const isAllowed = allowedOrigins.some(allowedOrigin => 
-            normalizeOrigin(allowedOrigin) === normalizedOrigin
-        );
-        
-        if (isAllowed) {
-            callback(null, true);
-        } else {
-            console.log('CORS blocked origin:', origin);
-            console.log('Allowed origins:', allowedOrigins);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
 
 app.use(cors(corsOptions));
 app.set('trust proxy', 1);
