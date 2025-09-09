@@ -31,14 +31,14 @@ let corsOptions;
 
 if (process.env.NODE_ENV === 'production') {
     corsOptions = {
-        origin: process.env.PROD_ORIGIN || 'https://unboundgroup.vercel.app',
+        origin: process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app/',
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization']
     };
 } else {
     corsOptions = {
-        origin: process.env.DEV_ORIGIN || 'https://unboundgroup-git-vercel-frontend-kmdcs-projects.vercel.app',
+        origin: process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app/',
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization']
