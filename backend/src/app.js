@@ -124,7 +124,7 @@ app.get('/api/session', (req, res) => {
 });
 
 // ALL ROUTES AFTER THIS ARE NOW GETTING AUTHENTICATED
-app.use(isAuthenticated);
+// app.use(isAuthenticated); // TEMPORARILY DISABLED FOR TESTING
 // All case routes
 
 app.use('/api/cases', caseRoutes);
