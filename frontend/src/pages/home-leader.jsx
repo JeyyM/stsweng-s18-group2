@@ -122,7 +122,7 @@ useEffect(() => {
     const title =
       user.role === "supervisor"
         ? `Coordinating Unit - ${user.spu_name}`
-        : "Coordinating Unit TESTTEST";
+        : "Coordinating Unit";
 
     document.title = title;
   }, [user]);
