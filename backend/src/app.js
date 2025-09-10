@@ -24,26 +24,55 @@ const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 
 app.use(cookieParser());
-//Cors is used for cross origin communication between servers 
-// Replace your existing CORS setup with this:
 
+// Updated CORS configuration to handle wildcards and ALLOWED_ORIGINS
 let corsOptions;
 
-if (process.env.NODE_ENV === 'production') {
-    corsOptions = {
-        origin: process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app',
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-    };
-} else {
-    corsOptions = {
-        origin: process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app',
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-    };
-}
+corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        // Get allowed origins from environment
+        const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+            process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) : [];
+        
+        // If no ALLOWED_ORIGINS set, fall back to old logic
+        if (allowedOrigins.length === 0) {
+            if (process.env.NODE_ENV === 'production') {
+                const prodOrigin = process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app';
+                return origin === prodOrigin ? callback(null, true) : callback(new Error('Not allowed by CORS'));
+            } else {
+                const devOrigin = process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app';
+                return origin === devOrigin ? callback(null, true) : callback(new Error('Not allowed by CORS'));
+            }
+        }
+        
+        // Check if origin matches any allowed pattern
+        const isAllowed = allowedOrigins.some(allowedOrigin => {
+            if (allowedOrigin === '*') return true;
+            
+            if (allowedOrigin.includes('*')) {
+                // Convert wildcard to regex
+                const regex = new RegExp('^' + allowedOrigin.replace(/\*/g, '.*') + '$');
+                return regex.test(origin);
+            }
+            
+            return origin === allowedOrigin;
+        });
+        
+        if (isAllowed) {
+            console.log(`CORS: Allowed origin: ${origin}`);
+            return callback(null, true);
+        }
+        
+        console.log(`CORS: Blocked origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
 
 app.use(cors(corsOptions));
 app.set('trust proxy', 1);
