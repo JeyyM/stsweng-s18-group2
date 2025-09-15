@@ -42,10 +42,10 @@ corsOptions = {
         // If no ALLOWED_ORIGINS set, fall back to old logic
         if (allowedOrigins.length === 0) {
             if (process.env.NODE_ENV === 'production') {
-                const prodOrigin = process.env.PROD_ORIGIN || 'https://stsweng-unbound.vercel.app';
+                const prodOrigin = process.env.PROD_ORIGIN || 'https://vercel.com/stswengs18s-projects/unbound-stsweng';
                 return origin === prodOrigin ? callback(null, true) : callback(new Error('Not allowed by CORS'));
             } else {
-                const devOrigin = process.env.DEV_ORIGIN || 'https://stsweng-unbound-git-dev-branch-jeyyms-projects.vercel.app';
+                const devOrigin = process.env.DEV_ORIGIN || 'https://unbound-stsweng-git-dev-branch-stswengs18s-projects.vercel.app/';
                 return origin === devOrigin ? callback(null, true) : callback(new Error('Not allowed by CORS'));
             }
         }
