@@ -53,7 +53,7 @@ export default function Login() {
                     <div className="main-logo-setup folder-logo !w-[8rem] !h-[12rem]"></div>
                     <div className="flex flex-col">
                         <p className="main-logo-text-nav-sub !text-[2rem] mb-[-1rem]">Unbound Manila Foundation Inc.</p>
-                        <p className="main-logo-text-nav !text-[3rem]">Case Management System</p>
+                        <p className="main-logo-text-nav !text-[3rem]">Case Management System SAMPLE BRANCH</p>
                     </div>
                 </div>
 
